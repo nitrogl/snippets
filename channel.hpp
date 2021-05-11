@@ -54,8 +54,8 @@ public:
       const T &message
     , const int port
     , const std::string &host = DEFAULT_HOST
-    , const unsigned int attempts = 3
-    , const std::chrono::duration<int,std::milli> &delay_ms = std::chrono::milliseconds(1)
+    , const unsigned int attempts = 10
+    , const std::chrono::duration<int,std::milli> &delay_ms = std::chrono::milliseconds(1000)
   );
   
   /**
@@ -122,12 +122,18 @@ template <class T> void Channel<T>::send(
       asio::connect(socket, resolver.resolve(host, std::to_string(port)));
       asio::write(socket, asio::const_buffer(message.c_str(), message.length()));
       this->view.push_back(message);
+      break; // Attempt successful!
     } catch (std::exception& e) {
       std::cerr << "Channel::send(). Exception: " << e.what() << std::endl;
       std::cerr << "Channel::send(). Attempt " << i << " of " << attempts << " failed." << std::endl;
       
       std::this_thread::sleep_for(delay_ms);
     }
+  }
+  
+  if (i == attempts) {
+    std::cerr << "Channel::send(). Maximum attempts reached: exiting." << std::endl;
+    std::exit(1);
   }
 }
 // -----------------------------------------------------------------------------
