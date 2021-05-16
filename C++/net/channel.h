@@ -25,8 +25,10 @@
 namespace net {
 
 using byte = unsigned char;
-using Bytes = std::vector<byte>;
-
+class Bytes : public std::vector<byte> {
+public:
+  friend std::ostream& operator<<(std::ostream& stream, const Bytes& data);
+};
 
 /**
  * A Channel offers send and receive methods to communicate through the network.
