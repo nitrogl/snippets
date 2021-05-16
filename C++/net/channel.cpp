@@ -16,6 +16,18 @@
 #include <thread>
 // -----------------------------------------------------------------------------
 
+namespace net {
+std::ostream& operator<<(std::ostream& stream, const Bytes& data)
+{
+  for (size_t i = 0; i < data.size(); i++) {
+    stream << data[i];
+  }
+    
+  return stream;
+};
+}; // Namespace - why is this required? (otherwise link errors...)
+// -----------------------------------------------------------------------------
+
 using namespace net;
 // -----------------------------------------------------------------------------
 
